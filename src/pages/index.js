@@ -3,12 +3,17 @@ import { useState, useEffect } from "react";
 
 // components
 import Catalog from "./Catalog";
+import Modal from "../components/NMModal";
 
 
 export default function Home() {
 
-    // state for storing products
-    const [products, setProducts] = useState([])
+    const [products, setProducts] = useState([])        // products array
+    const [showModal, setShowModal] = useState(false)   // show modal boolean
+
+    // modal handler
+    const handleCloseModal = () => setShowModal(false)
+    const handleShowModal = () => setShowModal(true)
 
 
     // fetch products from API
@@ -32,6 +37,7 @@ export default function Home() {
                 <title>NeoMerchant</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
+            <Modal show={showModal}/>
             <Catalog products={products}/>
         </>
     )
