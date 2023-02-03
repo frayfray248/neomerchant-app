@@ -3,13 +3,11 @@ import Container from "react-bootstrap/Container"
 
 // components
 import ProductCard from "../components/ProductCard"
-import NavigationBar from "@/components/NavBar"
 
 // Catalog component for showing a grid of Products
 const Catalog = ({ products }) => {
     return (
         <>
-        <NavigationBar />
         <Container>
             
             <Row lg={3}>

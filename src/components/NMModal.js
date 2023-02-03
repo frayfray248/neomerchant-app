@@ -1,10 +1,10 @@
 import Modal from 'react-bootstrap/Modal';
 
 
-function NMModal({ show }) {
+function NMModal({ show, handleCloseModal  }) {
 
   return (
-    <Modal show={show} >
+    <Modal show={show} onHide={handleCloseModal} >
         <Modal.Header closeButton>
           <Modal.Title>Title</Modal.Title>
         </Modal.Header>

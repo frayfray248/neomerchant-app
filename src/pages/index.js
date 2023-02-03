@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 // components
 import Catalog from "./Catalog";
 import Modal from "../components/NMModal";
+import NavigationBar from "@/components/NavBar"
 
 
 export default function Home() {
@@ -37,7 +38,8 @@ export default function Home() {
                 <title>NeoMerchant</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
-            <Modal show={showModal}/>
+            <Modal show={showModal} handleCloseModal={handleCloseModal}/>
+            <NavigationBar handleShowModal={handleShowModal}/>
             <Catalog products={products}/>
         </>
     )
