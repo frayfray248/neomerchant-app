@@ -18,10 +18,45 @@ export default function Home() {
     const handleCloseModal = () => setShowModal(false)
     const handleShowModal = () => setShowModal(true)
 
+
+    // login handler
+    const handleLogin = (username, password) => {
+        (async () => {
+            try {
+
+                // fetch data
+                const data = {
+                    username : username,
+                    password : password
+                }
+
+                // login post request
+                const res = await fetch("http://127.0.0.1:3001/users/login", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+
+                
+                const body = await res.json()
+
+                if (!body.token) throw "No token in body"
+
+                localStorage.setItem('token', body.token);
+
+            } catch(e) {
+                console.log(e)
+            }
+        })()
+    }
+
+
     // modal content handler for changing the content of the modal
     const handleChangeModalContent = (content) => {
         if (content === "loginForm") {
-            setModalContent(<LoginForm />)
+            setModalContent(<LoginForm handleLogin={handleLogin}/>)
         }
         else {
             setModalContent("")
@@ -43,7 +78,7 @@ export default function Home() {
         })()
     }, [])
 
-    
+
     return (
         <>
 
