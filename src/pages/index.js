@@ -10,9 +10,11 @@ import LoginForm from "@/components/LoginForm";
 
 export default function Home() {
 
+    // state
     const [products, setProducts] = useState([])                // products array
     const [showModal, setShowModal] = useState(false)           // show modal boolean
     const [modalContent, setModalContent] = useState("")        // modal content
+    const [loggedIn, setLoggedIn] = useState(false)             // logged in boolean
 
     // modal show/hide handlers
     const handleCloseModal = () => setShowModal(false)
@@ -21,7 +23,7 @@ export default function Home() {
 
     // login handler
     const handleLogin = (username, password) => {
-        (async () => {
+        return (async () => {
             try {
 
                 // fetch data
@@ -38,18 +40,28 @@ export default function Home() {
                     },
                     body: JSON.stringify(data)
                 })
-
                 
                 const body = await res.json()
 
+                if (!res.ok) throw body.message
+
                 if (!body.token) throw "No token in body"
 
-                localStorage.setItem('token', body.token);
+                // save token
+                localStorage.setItem('token', body.token)
+                setLoggedIn(true)
+
+                setShowModal(false)
 
             } catch(e) {
-                console.log(e)
+                throw e
             }
         })()
+    }
+
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+        setLoggedIn(false)
     }
 
 
@@ -75,6 +87,8 @@ export default function Home() {
             // update state
             setProducts(newProducts)
 
+            
+
         })()
     }, [])
 
@@ -92,7 +106,12 @@ export default function Home() {
                 {modalContent}
             </Modal>
             {/* NAV BAR */}
-            <NavigationBar handleShowModal={handleShowModal} handleChangeModalContent={handleChangeModalContent}/>
+            <NavigationBar 
+            handleShowModal={handleShowModal} 
+            handleChangeModalContent={handleChangeModalContent}
+            handleLogOut={handleLogout}
+            loggedIn={loggedIn}
+            />
 
             {/* VIEWS */}
             <Catalog products={products} />

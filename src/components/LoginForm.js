@@ -6,11 +6,16 @@ function LoginForm({ handleLogin }) {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('')
 
 
     const handleLoginSubmit = (e) => {
         e.preventDefault();
-        handleLogin(username, password);
+        handleLogin(username, password)
+        .catch(message => {
+            setErrorMessage(message)
+        }
+            )
     }
 
     return (
@@ -32,6 +37,7 @@ function LoginForm({ handleLogin }) {
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </Form.Group>
+            <p>{errorMessage}</p>
             <Button variant="primary" type="submit">
                 Login
             </Button>
