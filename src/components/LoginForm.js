@@ -5,24 +5,37 @@ import { useState } from 'react';
 
 function LoginForm({ handleLogin }) {
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('')
 
-
+    // login form submit handler
     const handleLoginSubmit = (values, { setSubmitting }) => {
 
+        // call login handler
         handleLogin(values.username, values.password)
+            // successful login
             .then(() => {
                 setSubmitting(false)
             })
+            // error
             .catch(message => {
                 setErrorMessage(message)
             })
     }
 
+    // validation function. Only checks for missing fields
     const validate = values => {
 
+        const errors = {}
+
+        if (!values.username) {
+            errors.username = "Username required"
+        }
+
+        if (!values.password) {
+            errors.password = "Password required"
+        }
+
+        return errors
     }
 
     return (
@@ -32,7 +45,7 @@ function LoginForm({ handleLogin }) {
             onSubmit={handleLoginSubmit}
         >
             {({
-
+                // formik properties
                 values,
                 errors,
                 touched,
@@ -43,8 +56,9 @@ function LoginForm({ handleLogin }) {
 
             }) => (
 
-                
+
                 <Form onSubmit={handleSubmit}>
+                    {/* USERNAME */}
                     <Form.Group className="mb-3" controlId="loginFormUsername">
                         <Form.Label>Username</Form.Label>
                         <Form.Control
@@ -60,7 +74,7 @@ function LoginForm({ handleLogin }) {
                         {errors.username && touched.username && errors.username}
                     </Form.Group>
 
-
+                    {/* PASSWORD */}
                     <Form.Group className="mb-3" controlId="loginFormPassword">
                         <Form.Label>Password</Form.Label>
                         <Form.Control
@@ -76,6 +90,7 @@ function LoginForm({ handleLogin }) {
                         {errors.password && touched.password && errors.password}
                     </Form.Group>
 
+                    {/* SUBMIT (LOGIN) */}
                     <Button variant="primary" type="submit" disabled={isSubmitting}>
                         Login
                     </Button>
