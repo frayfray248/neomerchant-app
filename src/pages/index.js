@@ -13,6 +13,7 @@ export default function Home() {
     // state
     const [products, setProducts] = useState([])                // products array
     const [showModal, setShowModal] = useState(false)           // show modal boolean
+    const [modalTitle, setModalTitle] = useState("")            // modal title
     const [modalContent, setModalContent] = useState("")        // modal content
     const [loggedIn, setLoggedIn] = useState(false)             // logged in boolean
 
@@ -69,6 +70,7 @@ export default function Home() {
     const handleChangeModalContent = (content) => {
         if (content === "loginForm") {
             setModalContent(<LoginForm handleLogin={handleLogin}/>)
+            setModalTitle("Login")
         }
         else {
             setModalContent("")
@@ -102,7 +104,7 @@ export default function Home() {
             </Head>
 
             {/* MODAL */}
-            <Modal show={showModal} handleCloseModal={handleCloseModal}>
+            <Modal show={showModal} title={modalTitle} handleCloseModal={handleCloseModal}>
                 {modalContent}
             </Modal>
             {/* NAV BAR */}
