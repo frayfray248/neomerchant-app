@@ -5,10 +5,10 @@ Neomerchant-app is a ecommerce store web interface. It is built using Next JS an
 # Features
 
 - View products in a catalog
+- Login form and JWT sessions
 
 # Upcoming Features
 
-- Login form and JWT sessions
 - Search products
 - Shopping cart
 - Checkout and Paypal payments
