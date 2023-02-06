@@ -1,4 +1,4 @@
-import Button from 'react-bootstrap/Button';
+import NMButton from './NMButton';
 import Form from 'react-bootstrap/Form';
 import { Formik } from 'formik';
 import { useState } from 'react';
@@ -91,9 +91,9 @@ function LoginForm({ handleLogin }) {
                     </Form.Group>
 
                     {/* SUBMIT (LOGIN) */}
-                    <Button variant="primary" type="submit" disabled={isSubmitting}>
+                    <NMButton type="submit" disabled={isSubmitting}>
                         Login
-                    </Button>
+                    </NMButton>
                     {errorMessage}
                 </Form>
             )}

@@ -10,10 +10,11 @@ const Catalog = ({ products }) => {
         <>
         <Container>
             
-            <Row lg={3}>
+            <Row xl={3} lg={2} md={2} sm={1} xs={1} >
                 {
                     products.map((product, index) =>
                         <ProductCard
+                        
                             key={index}
                             title={product.title}
                             price={product.price}

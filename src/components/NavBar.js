@@ -2,7 +2,12 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Link from 'next/link'
-import Button from 'react-bootstrap/Button'
+import styled from 'styled-components';
+import NMButton from './NMButton';
+
+const StyledNavBar = styled(Navbar)`
+    box-shadow: 10px 10px 10px;
+`
 
 // Navigation bar to navigate to the sites pages
 const NavigationBar = ({ handleShowModal, handleChangeModalContent, handleLogOut, loggedIn }) => {
@@ -17,7 +22,7 @@ const NavigationBar = ({ handleShowModal, handleChangeModalContent, handleLogOut
     }
 
     return (
-        <Navbar bg="light" expand="lg">
+        <StyledNavBar bg="light" expand="lg">
             <Container>
                 <Navbar.Brand href="#home">NeoMerchant</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -25,12 +30,12 @@ const NavigationBar = ({ handleShowModal, handleChangeModalContent, handleLogOut
                     <Nav className="me-auto">
                         <Link href="/#catalog" passHref legacyBehavior><Nav.Link>Catalog</Nav.Link></Link>
                     </Nav>
-                    <Button variant="outline-primary" onClick={
+                    <NMButton onClick={
                         loggedIn ? handleLogoutPressed : handleLoginPressed
-                        }>{loggedIn ? "Log out" : "Login"}</Button>
+                    }>{loggedIn ? "Log out" : "Login"}</NMButton>
                 </Navbar.Collapse>
             </Container>
-        </Navbar>
+        </StyledNavBar>
     )
 }
 
