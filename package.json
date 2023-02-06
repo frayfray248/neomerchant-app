@@ -1,6 +1,6 @@
 {
   "name": "neo-merchant-app",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,9 +13,11 @@
     "bootstrap": "^5.2.3",
     "eslint": "8.33.0",
     "eslint-config-next": "13.1.6",
+    "formik": "^2.2.9",
     "next": "13.1.6",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "styled-components": "^5.3.6"
   }
 }

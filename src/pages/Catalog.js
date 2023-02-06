@@ -7,11 +7,14 @@ import ProductCard from "../components/ProductCard"
 // Catalog component for showing a grid of Products
 const Catalog = ({ products }) => {
     return (
+        <>
         <Container>
-            <Row lg={3}>
+            
+            <Row xl={3} lg={2} md={2} sm={1} xs={1} >
                 {
                     products.map((product, index) =>
                         <ProductCard
+                        
                             key={index}
                             title={product.title}
                             price={product.price}
@@ -22,6 +25,7 @@ const Catalog = ({ products }) => {
                 }
             </Row>
         </Container>
+        </>
     )
 }
 
