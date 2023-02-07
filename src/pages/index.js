@@ -6,6 +6,7 @@ import Catalog from "./Catalog";
 import Modal from "../components/NMModal";
 import NavigationBar from "@/components/NavBar"
 import LoginForm from "@/components/LoginForm";
+import NMOffCanvas from "@/components/OffCanvas";
 
 
 export default function Home() {
@@ -15,12 +16,16 @@ export default function Home() {
     const [showModal, setShowModal] = useState(false)           // show modal boolean
     const [modalTitle, setModalTitle] = useState("")            // modal title
     const [modalContent, setModalContent] = useState("")        // modal content
+    const [showOffCanvas, setShowOffCanvas] = useState(false)   // logged in boolean
     const [loggedIn, setLoggedIn] = useState(false)             // logged in boolean
 
     // modal show/hide handlers
     const handleCloseModal = () => setShowModal(false)
     const handleShowModal = () => setShowModal(true)
 
+    // offcanvas show/hide handlers
+    const handleCloseOffCanvas = () => setShowOffCanvas(false)
+    const handleShowOffCanvas = () => setShowOffCanvas(true)
 
     // login handler
     const handleLogin = (username, password) => {
@@ -108,8 +113,10 @@ export default function Home() {
                 {modalContent}
             </Modal>
             {/* NAV BAR */}
+            
             <NavigationBar 
             handleShowModal={handleShowModal} 
+            handleShowOffCanvas={handleShowOffCanvas}
             handleChangeModalContent={handleChangeModalContent}
             handleLogOut={handleLogout}
             loggedIn={loggedIn}
@@ -117,6 +124,7 @@ export default function Home() {
 
             {/* VIEWS */}
             <Catalog products={products} />
+            <NMOffCanvas showOffCanvas={showOffCanvas} handleCloseOffCanvas={handleCloseOffCanvas} />
         </>
     )
 }
