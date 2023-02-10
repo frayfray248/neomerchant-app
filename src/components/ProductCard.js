@@ -2,6 +2,7 @@ import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import styled from 'styled-components';
 import NMButton from './NMButton';
+import { useState } from 'react';
 
 const StyledCardImage = styled(Card.Img)`
     height: 300px;
@@ -23,7 +24,14 @@ const StyledButtonContainer = styled.div`
   padding: 1rem;
 `
 
-const ProductCard = ({ title, description, price, category, image }) => {
+const ProductCard = ({ productId, title, description, price, category, image, handleAddProductToCart }) => {
+
+    const [cardProductId, setCardProductId] = useState(productId)
+
+    const handleAddToCartPressed = (e) => {
+        handleAddProductToCart(cardProductId)
+    }
+
   return (
     <Col className="p-4">
       <StyledCard>
@@ -34,7 +42,7 @@ const ProductCard = ({ title, description, price, category, image }) => {
           <Card.Text>$ {price}</Card.Text>
         </Card.Body>
         <StyledButtonContainer>
-          <NMButton variant="primary">Add to Cart</NMButton>
+          <NMButton onClick={handleAddToCartPressed} variant="primary">Add to Cart</NMButton>
         </StyledButtonContainer>
       </StyledCard>
     </Col>
