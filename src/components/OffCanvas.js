@@ -2,15 +2,16 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 
 
 // Catalog component for showing a grid of Products
-const NMOffCanvas = ({ showOffCanvas, handleCloseOffCanvas }) => {
+const NMOffCanvas = ({ showOffCanvas, handleCloseOffCanvas, products, shoppingCartItems }) => {
     return (
         <Offcanvas show={showOffCanvas} onHide={handleCloseOffCanvas} placement="end">
             <Offcanvas.Header closeButton>
                 <Offcanvas.Title>Offcanvas</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
-                Some text as placeholder. In real life you can have the elements you
-                have chosen. Like, text, images, lists, etc.
+                <ul>
+                {shoppingCartItems.map((item, index) => <li key={index}>{products.find(product => product._id === item._id).title} - {item.quantity}</li>)}
+                </ul>
             </Offcanvas.Body>
         </Offcanvas>
     )

@@ -8,16 +8,20 @@ import NavigationBar from "@/components/NavBar"
 import LoginForm from "@/components/LoginForm";
 import NMOffCanvas from "@/components/OffCanvas";
 
+// api
+import api from "../api/api";
+
 
 export default function Home() {
 
     // state
-    const [products, setProducts] = useState([])                // products array
-    const [showModal, setShowModal] = useState(false)           // show modal boolean
-    const [modalTitle, setModalTitle] = useState("")            // modal title
-    const [modalContent, setModalContent] = useState("")        // modal content
-    const [showOffCanvas, setShowOffCanvas] = useState(false)   // logged in boolean
-    const [loggedIn, setLoggedIn] = useState(false)             // logged in boolean
+    const [products, setProducts] = useState([])                    // products array
+    const [showModal, setShowModal] = useState(false)               // show modal boolean
+    const [modalTitle, setModalTitle] = useState("")                // modal title
+    const [modalContent, setModalContent] = useState("")            // modal content
+    const [showOffCanvas, setShowOffCanvas] = useState(false)       // logged in boolean
+    const [loggedIn, setLoggedIn] = useState(false)                 // logged in boolean
+    const [shoppingCartItems, setShoppingCartItems] = useState([])  // shopping cart products
 
     // modal show/hide handlers
     const handleCloseModal = () => setShowModal(false)
@@ -27,54 +31,85 @@ export default function Home() {
     const handleCloseOffCanvas = () => setShowOffCanvas(false)
     const handleShowOffCanvas = () => setShowOffCanvas(true)
 
+    // add product to shopping cart handler
+    const handleAddProductToCart = (productId) => {
+
+        if (!loggedIn) {
+            handleShowModal()
+            handleChangeModalContent("loginForm")
+            return
+        }
+
+        // add item to client side cart
+        const items = shoppingCartItems
+
+        // find existing item
+        const existingItem = items.find(item => item._id === productId)
+
+        // increment quantity of existing item if found
+        if (existingItem) {
+            existingItem.quantity++
+        }
+        // add new item if not existing already
+        else {
+            items.push({
+                _id: productId,
+                quantity: 1
+            })
+        }
+
+        // set shopping cart state
+        setShoppingCartItems(items)
+
+            ; (async () => {
+                try {
+
+                    // get shopping cart 
+                    let shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
+
+                    // create shopping cart if user doesn't have one
+                    if (!shoppingCart) shoppingCart = await api.createShoppingCart(localStorage.getItem('token'))
+
+                    // set shopping cart 
+                    shoppingCart.products = shoppingCartItems
+
+                    api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
+
+                } catch (e) {
+                    alert(e)
+                }
+            })()
+
+    }
+
+
     // login handler
     const handleLogin = (username, password) => {
-        return (async () => {
+        (async () => {
             try {
-
-                // fetch data
-                const data = {
-                    username : username,
-                    password : password
-                }
-
-                // login post request
-                const res = await fetch("http://127.0.0.1:3001/users/login", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                })
-                
-                const body = await res.json()
-
-                if (!res.ok) throw body.message
-
-                if (!body.token) throw "No token in body"
-
-                // save token
-                localStorage.setItem('token', body.token)
+                await api.login(username, password)
                 setLoggedIn(true)
-
                 setShowModal(false)
-
-            } catch(e) {
-                throw e
+                const shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
+                if (shoppingCart) setShoppingCartItems(shoppingCart.products)
+            } catch (e) {
+                alert(e)
             }
         })()
     }
 
+    // logout handler
     const handleLogout = () => {
-        localStorage.removeItem('token')
+        localStorage.removeItem('token')    
         setLoggedIn(false)
+        setShoppingCartItems([])
     }
 
 
     // modal content handler for changing the content of the modal
     const handleChangeModalContent = (content) => {
         if (content === "loginForm") {
-            setModalContent(<LoginForm handleLogin={handleLogin}/>)
+            setModalContent(<LoginForm handleLogin={handleLogin} />)
             setModalTitle("Login")
         }
         else {
@@ -94,7 +129,17 @@ export default function Home() {
             // update state
             setProducts(newProducts)
 
-            
+            // logged in initialization
+            if (localStorage.getItem('token')) {
+                setLoggedIn(true)
+                const shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
+
+
+                if (shoppingCart) setShoppingCartItems(shoppingCart.products)
+                console.log(shoppingCartItems)
+                
+            }
+
 
         })()
     }, [])
@@ -113,18 +158,19 @@ export default function Home() {
                 {modalContent}
             </Modal>
             {/* NAV BAR */}
-            
-            <NavigationBar 
-            handleShowModal={handleShowModal} 
-            handleShowOffCanvas={handleShowOffCanvas}
-            handleChangeModalContent={handleChangeModalContent}
-            handleLogOut={handleLogout}
-            loggedIn={loggedIn}
+
+            <NavigationBar
+                handleShowModal={handleShowModal}
+                handleShowOffCanvas={handleShowOffCanvas}
+                handleChangeModalContent={handleChangeModalContent}
+                handleLogOut={handleLogout}
+                numProductsInCart={shoppingCartItems}
+                loggedIn={loggedIn}
             />
 
             {/* VIEWS */}
-            <Catalog products={products} />
-            <NMOffCanvas showOffCanvas={showOffCanvas} handleCloseOffCanvas={handleCloseOffCanvas} />
+            <Catalog products={products} handleAddProductToCart={handleAddProductToCart} />
+            <NMOffCanvas showOffCanvas={showOffCanvas} handleCloseOffCanvas={handleCloseOffCanvas} products={products} shoppingCartItems={shoppingCartItems}/>
         </>
     )
 }

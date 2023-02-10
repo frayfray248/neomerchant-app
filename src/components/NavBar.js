@@ -10,7 +10,7 @@ const StyledNavBar = styled(Navbar)`
 `
 
 // Navigation bar to navigate to the sites pages
-const NavigationBar = ({ handleShowModal, handleChangeModalContent, handleShowOffCanvas, handleLogOut, loggedIn, className}) => {
+const NavigationBar = ({ handleShowModal, handleChangeModalContent, handleShowOffCanvas, handleLogOut, loggedIn, numProductsInCart}) => {
 
     const handleLoginPressed = () => {
         handleShowModal()
@@ -39,7 +39,7 @@ const NavigationBar = ({ handleShowModal, handleChangeModalContent, handleShowOf
                         loggedIn ? <NMButton 
                         className="m-2"
                         onClick={handleShoppingCartPressed}
-                        > Cart </NMButton> : ""
+                        >Cart</NMButton> : ""
                     }
                     
 
