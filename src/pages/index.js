@@ -85,7 +85,7 @@ export default function Home() {
 
     // login handler
     const handleLogin = (username, password) => {
-        (async () => {
+        return (async () => {
             try {
                 await api.login(username, password)
                 setLoggedIn(true)
@@ -93,7 +93,7 @@ export default function Home() {
                 const shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
                 if (shoppingCart) setShoppingCartItems(shoppingCart.products)
             } catch (e) {
-                alert(e)
+                throw e
             }
         })()
     }
