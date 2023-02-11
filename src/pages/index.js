@@ -1,15 +1,18 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 // components
 import Catalog from "./Catalog";
 import Modal from "../components/NMModal";
 import NavigationBar from "@/components/NavBar"
 import LoginForm from "@/components/LoginForm";
+import OrderForm from "@/components/OrderForm";
 import NMOffCanvas from "@/components/OffCanvas";
 
 // api
 import api from "../api/api";
+
 
 
 export default function Home() {
@@ -60,7 +63,7 @@ export default function Home() {
 
         // set shopping cart state
         setShoppingCartItems(items)
-
+        handleShowOffCanvas()
             ; (async () => {
                 try {
 
@@ -84,29 +87,29 @@ export default function Home() {
 
     const handleRemoveItemFromCart = (index) => {
 
-        
+
         const items = [...shoppingCartItems]
 
         items.splice(index, 1)
         setShoppingCartItems(items)
-        ; (async () => {
-            try {
+            ; (async () => {
+                try {
 
-                // get shopping cart 
-                let shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
+                    // get shopping cart 
+                    let shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
 
-                // create shopping cart if user doesn't have one
-                if (!shoppingCart) shoppingCart = await api.createShoppingCart(localStorage.getItem('token'))
+                    // create shopping cart if user doesn't have one
+                    if (!shoppingCart) shoppingCart = await api.createShoppingCart(localStorage.getItem('token'))
 
-                // set shopping cart 
-                shoppingCart.products = shoppingCartItems
+                    // set shopping cart 
+                    shoppingCart.products = shoppingCartItems
 
-                api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
+                    api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
 
-            } catch (e) {
-                alert(e)
-            }
-        })()
+                } catch (e) {
+                    alert(e)
+                }
+            })()
     }
 
 
@@ -139,15 +142,20 @@ export default function Home() {
             setModalContent(<LoginForm handleLogin={handleLogin} />)
             setModalTitle("Login")
         }
+        else if (content === "orderForm") {
+            setModalContent(<OrderForm />)
+            setModalTitle("Order")
+            handleShowModal()
+        }
         else {
             setModalContent("")
         }
     }
 
-    useEffect(() => { console.log(shoppingCartItems)}, [ shoppingCartItems])
+    useEffect(() => { console.log(shoppingCartItems) }, [shoppingCartItems])
 
 
-    // fetch products from API
+    // useEffect block for when the component loads
     useEffect(() => {
         (async () => {
 
@@ -181,10 +189,9 @@ export default function Home() {
                     if (shoppingCart) setShoppingCartItems(shoppingCart.products)
                     console.log(shoppingCartItems)
                 }
-
-
-
             }
+
+
 
 
         })()
@@ -199,6 +206,8 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
 
+        <PayPalScriptProvider options={{ "client-id": "AXEYztEFtSFaeVoeyJ0fQW-z-TR6PBTOB30V4Jph5tx6iS3rpxPK2MAY9ZsGTpqr0Po61SN5p3IzmPz3"}} >
+        
             {/* MODAL */}
             <Modal show={showModal} title={modalTitle} handleCloseModal={handleCloseModal} >
                 {modalContent}
@@ -216,7 +225,15 @@ export default function Home() {
 
             {/* VIEWS */}
             <Catalog products={products} handleAddProductToCart={handleAddProductToCart} />
-            <NMOffCanvas showOffCanvas={showOffCanvas} handleCloseOffCanvas={handleCloseOffCanvas} products={products} shoppingCartItems={shoppingCartItems} handleRemoveItemFromCart={handleRemoveItemFromCart}/>
+            <NMOffCanvas
+                showOffCanvas={showOffCanvas}
+                handleCloseOffCanvas={handleCloseOffCanvas}
+                products={products}
+                shoppingCartItems={shoppingCartItems}
+                handleRemoveItemFromCart={handleRemoveItemFromCart}
+                handleChangeModalContent={handleChangeModalContent}
+            />
+            </PayPalScriptProvider>
         </>
     )
 }
