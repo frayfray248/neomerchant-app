@@ -1,9 +1,19 @@
-const ShoppingCartItemRow = ({ item, product}) => (
-    <tr>
-        <td>{product.title}</td>
-        <td>{item.quantity}</td>
-        <td>${product.price * item.quantity}</td>
-    </tr>
-)
+import Button from 'react-bootstrap/Button'
+
+const ShoppingCartItemRow = ({ itemIndex, item, cartRowItem, handleRemoveItemFromCart }) => {
+
+    const removeItemOnClick = () => {
+        handleRemoveItemFromCart(itemIndex)
+    }
+
+    return (
+        <tr>
+            <td>{cartRowItem.title}</td>
+            <td>{cartRowItem.quantity}</td>
+            <td>${cartRowItem.price * cartRowItem.quantity}</td>
+            <td><Button variant="danger" onClick={removeItemOnClick}>X</Button></td>
+        </tr>
+    )
+}
 
 export default ShoppingCartItemRow

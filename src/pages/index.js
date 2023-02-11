@@ -82,6 +82,33 @@ export default function Home() {
 
     }
 
+    const handleRemoveItemFromCart = (index) => {
+
+        
+        const items = [...shoppingCartItems]
+
+        items.splice(index, 1)
+        setShoppingCartItems(items)
+        ; (async () => {
+            try {
+
+                // get shopping cart 
+                let shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
+
+                // create shopping cart if user doesn't have one
+                if (!shoppingCart) shoppingCart = await api.createShoppingCart(localStorage.getItem('token'))
+
+                // set shopping cart 
+                shoppingCart.products = shoppingCartItems
+
+                api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
+
+            } catch (e) {
+                alert(e)
+            }
+        })()
+    }
+
 
     // login handler
     const handleLogin = (username, password) => {
@@ -116,6 +143,8 @@ export default function Home() {
             setModalContent("")
         }
     }
+
+    useEffect(() => { console.log(shoppingCartItems)}, [ shoppingCartItems])
 
 
     // fetch products from API
@@ -171,7 +200,7 @@ export default function Home() {
             </Head>
 
             {/* MODAL */}
-            <Modal show={showModal} title={modalTitle} handleCloseModal={handleCloseModal}>
+            <Modal show={showModal} title={modalTitle} handleCloseModal={handleCloseModal} >
                 {modalContent}
             </Modal>
             {/* NAV BAR */}
@@ -187,7 +216,7 @@ export default function Home() {
 
             {/* VIEWS */}
             <Catalog products={products} handleAddProductToCart={handleAddProductToCart} />
-            <NMOffCanvas showOffCanvas={showOffCanvas} handleCloseOffCanvas={handleCloseOffCanvas} products={products} shoppingCartItems={shoppingCartItems} />
+            <NMOffCanvas showOffCanvas={showOffCanvas} handleCloseOffCanvas={handleCloseOffCanvas} products={products} shoppingCartItems={shoppingCartItems} handleRemoveItemFromCart={handleRemoveItemFromCart}/>
         </>
     )
 }
