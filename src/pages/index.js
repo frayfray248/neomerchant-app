@@ -100,7 +100,7 @@ export default function Home() {
 
     // logout handler
     const handleLogout = () => {
-        localStorage.removeItem('token')    
+        localStorage.removeItem('token')
         setLoggedIn(false)
         setShoppingCartItems([])
     }
@@ -129,15 +129,32 @@ export default function Home() {
             // update state
             setProducts(newProducts)
 
+            // get token from local storage
+            const token = localStorage.getItem('token')
+
             // logged in initialization
-            if (localStorage.getItem('token')) {
-                setLoggedIn(true)
-                const shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
+            if (token) {
+
+                // get token expiry
+                const expiry = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString()).exp
+
+                const now = Math.floor(Date.now() / 1000)
+
+                // delete token if expired
+                if (now > expiry) {
+                    localStorage.removeItem('token')
+                }
+                // set logged in state and get shopping cart 
+                else {
+                    setLoggedIn(true)
+                    const shoppingCart = await api.getShoppingCart(token)
+
+                    if (shoppingCart) setShoppingCartItems(shoppingCart.products)
+                    console.log(shoppingCartItems)
+                }
 
 
-                if (shoppingCart) setShoppingCartItems(shoppingCart.products)
-                console.log(shoppingCartItems)
-                
+
             }
 
 
@@ -170,7 +187,7 @@ export default function Home() {
 
             {/* VIEWS */}
             <Catalog products={products} handleAddProductToCart={handleAddProductToCart} />
-            <NMOffCanvas showOffCanvas={showOffCanvas} handleCloseOffCanvas={handleCloseOffCanvas} products={products} shoppingCartItems={shoppingCartItems}/>
+            <NMOffCanvas showOffCanvas={showOffCanvas} handleCloseOffCanvas={handleCloseOffCanvas} products={products} shoppingCartItems={shoppingCartItems} />
         </>
     )
 }
