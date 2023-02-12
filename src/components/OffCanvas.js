@@ -22,7 +22,7 @@ const NMOffCanvas = ({
                     shoppingCartItems={shoppingCartItems}
                     handleRemoveItemFromCart={handleRemoveItemFromCart} 
                     handleChangeModalContent={handleChangeModalContent}
-                    />
+                    />      
             </Offcanvas.Body>
         </Offcanvas>
     )

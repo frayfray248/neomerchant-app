@@ -37,17 +37,18 @@ export default function Home() {
     // add product to shopping cart handler
     const handleAddProductToCart = (productId) => {
 
+        // check if logged in
         if (!loggedIn) {
             handleShowModal()
             handleChangeModalContent("loginForm")
             return
         }
 
-        // add item to client side cart
-        const items = shoppingCartItems
+        // getting shopping cart items
+        const newShoppingCartItems = [...shoppingCartItems]
 
-        // find existing item
-        const existingItem = items.find(item => item._id === productId)
+        // find existing item to add
+        const existingItem = newShoppingCartItems.find(item => item._id === productId)
 
         // increment quantity of existing item if found
         if (existingItem) {
@@ -55,14 +56,14 @@ export default function Home() {
         }
         // add new item if not existing already
         else {
-            items.push({
+            newShoppingCartItems.push({
                 _id: productId,
                 quantity: 1
             })
         }
 
         // set shopping cart state
-        setShoppingCartItems(items)
+        setShoppingCartItems(newShoppingCartItems)
         handleShowOffCanvas()
             ; (async () => {
                 try {
@@ -89,9 +90,14 @@ export default function Home() {
 
 
         const items = [...shoppingCartItems]
+        
 
         items.splice(index, 1)
+        
+        
         setShoppingCartItems(items)
+
+        
             ; (async () => {
                 try {
 
@@ -102,7 +108,8 @@ export default function Home() {
                     if (!shoppingCart) shoppingCart = await api.createShoppingCart(localStorage.getItem('token'))
 
                     // set shopping cart 
-                    shoppingCart.products = shoppingCartItems
+                    shoppingCart.products = items
+                    console.log(items, shoppingCartItems)
 
                     api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
 
@@ -151,9 +158,6 @@ export default function Home() {
             setModalContent("")
         }
     }
-
-    useEffect(() => { console.log(shoppingCartItems) }, [shoppingCartItems])
-
 
     // useEffect block for when the component loads
     useEffect(() => {

@@ -31,7 +31,7 @@ const login = (username, password) => {
 
             // save token
             localStorage.setItem('token', body.token)
-            
+
 
         } catch (e) {
             throw e
@@ -60,7 +60,7 @@ const createShoppingCart = (token) => {
             // bad response error
             if (res.status !== 201) throw body.message
 
-            return { products : body.products}
+            return { products: body.products }
 
         } catch (e) {
             throw e
@@ -91,8 +91,8 @@ const getShoppingCart = (token) => {
             // bad response error
             if (res.status !== 200) throw body.message
 
-            return { products : body.products}
-            
+            return { products: body.products }
+
         } catch (e) {
             throw e
         }
@@ -112,7 +112,7 @@ const updateShoppingCart = (token, shoppingCartItems) => {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body : JSON.stringify(shoppingCartItems)
+                body: JSON.stringify(shoppingCartItems)
             })
 
             const body = await res.json()
@@ -121,16 +121,47 @@ const updateShoppingCart = (token, shoppingCartItems) => {
             if (res.status !== 200) throw body.message
 
             return body
-            
+
         } catch (e) {
             throw e
         }
     })()
 }
 
+
+// paypal create order
+const createOrder = (token, shoppingCartItems) => {
+    return (async () => {
+        try {
+
+
+            const res = await fetch('http://127.0.0.1:3001/orders', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(shoppingCartItems)
+            })
+
+            const body = await res.json()
+
+            // bad response error
+            if (res.status !== 200) throw body.message
+
+            return body
+
+        } catch(e) {
+            throw e
+        }
+    })()
+}
+
+
 export default {
     login: login,
-    createShoppingCart : createShoppingCart,
-    getShoppingCart : getShoppingCart,
-    updateShoppingCart : updateShoppingCart
+    createShoppingCart: createShoppingCart,
+    getShoppingCart: getShoppingCart,
+    updateShoppingCart: updateShoppingCart,
+    createOrder : createOrder
 }
