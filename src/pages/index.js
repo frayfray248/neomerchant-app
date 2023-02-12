@@ -222,6 +222,7 @@ export default function Home() {
                     handleLogOut={handleLogout}
                     numProductsInCart={shoppingCartItems}
                     loggedIn={loggedIn}
+                    shoppingCartItems={shoppingCartItems}
                 />
 
                 {/* VIEWS */}
