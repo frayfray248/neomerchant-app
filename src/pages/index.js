@@ -36,68 +36,63 @@ export default function Home() {
 
     // add product to shopping cart handler
     const handleAddProductToCart = (productId) => {
+        (async () => {
+            try {
 
-        // check if logged in
-        if (!loggedIn) {
-            handleShowModal()
-            handleChangeModalContent("loginForm")
-            return
-        }
-
-        // getting shopping cart items
-        const newShoppingCartItems = [...shoppingCartItems]
-
-        // find existing item to add
-        const existingItem = newShoppingCartItems.find(item => item._id === productId)
-
-        // increment quantity of existing item if found
-        if (existingItem) {
-            existingItem.quantity++
-        }
-        // add new item if not existing already
-        else {
-            newShoppingCartItems.push({
-                _id: productId,
-                quantity: 1
-            })
-        }
-
-        // set shopping cart state
-        setShoppingCartItems(newShoppingCartItems)
-        handleShowOffCanvas()
-            ; (async () => {
-                try {
-
-                    // get shopping cart 
-                    let shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
-
-                    // create shopping cart if user doesn't have one
-                    if (!shoppingCart) shoppingCart = await api.createShoppingCart(localStorage.getItem('token'))
-
-                    // set shopping cart 
-                    shoppingCart.products = shoppingCartItems
-
-                    api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
-
-                } catch (e) {
-                    alert(e)
+                // check if logged in
+                if (!loggedIn) {
+                    handleShowModal()
+                    handleChangeModalContent("loginForm")
+                    return
                 }
-            })()
 
+                // getting shopping cart items
+                const newShoppingCartItems = [...shoppingCartItems]
+
+                // find existing item to add
+                const existingItem = newShoppingCartItems.find(item => item._id === productId)
+
+                // increment quantity of existing item if found
+                if (existingItem) {
+                    existingItem.quantity++
+                }
+                // add new item if not existing already
+                else {
+                    newShoppingCartItems.push({
+                        _id: productId,
+                        quantity: 1
+                    })
+                }
+
+                // get shopping cart 
+                let shoppingCart = await api.getShoppingCart(localStorage.getItem('token'))
+
+                // create shopping cart if user doesn't have one
+                if (!shoppingCart) shoppingCart = await api.createShoppingCart(localStorage.getItem('token'))
+
+                // set shopping cart 
+                shoppingCart.products = newShoppingCartItems
+
+                // update shopping cart api call
+                const updatedShoppingCart = await api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
+
+                // set shopping cart items to items returned from updated shopping cart api call
+                setShoppingCartItems(updatedShoppingCart.products)
+
+            } catch (e) {
+                alert(e)
+            }
+        })()
     }
 
     const handleRemoveItemFromCart = (index) => {
 
+        // get shopping cart items
+        const newShoppingCartItems = [...shoppingCartItems]
 
-        const items = [...shoppingCartItems]
-        
+        // remove item
+        newShoppingCartItems.splice(index, 1)
 
-        items.splice(index, 1)
-        
-        
-        setShoppingCartItems(items)
-
-        
             ; (async () => {
                 try {
 
@@ -108,11 +103,13 @@ export default function Home() {
                     if (!shoppingCart) shoppingCart = await api.createShoppingCart(localStorage.getItem('token'))
 
                     // set shopping cart 
-                    shoppingCart.products = items
-                    console.log(items, shoppingCartItems)
+                    shoppingCart.products = newShoppingCartItems
 
-                    api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
+                    // update shopping cart api call
+                    const updatedShoppingCart = await api.updateShoppingCart(localStorage.getItem('token'), shoppingCart)
 
+                    // set shopping cart items to items returned from updated shopping cart api call
+                    setShoppingCartItems(updatedShoppingCart.products)
                 } catch (e) {
                     alert(e)
                 }
@@ -210,33 +207,33 @@ export default function Home() {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
 
-        <PayPalScriptProvider options={{ "client-id": "AXEYztEFtSFaeVoeyJ0fQW-z-TR6PBTOB30V4Jph5tx6iS3rpxPK2MAY9ZsGTpqr0Po61SN5p3IzmPz3"}} >
-        
-            {/* MODAL */}
-            <Modal show={showModal} title={modalTitle} handleCloseModal={handleCloseModal} >
-                {modalContent}
-            </Modal>
-            {/* NAV BAR */}
+            <PayPalScriptProvider options={{ "client-id": "AXEYztEFtSFaeVoeyJ0fQW-z-TR6PBTOB30V4Jph5tx6iS3rpxPK2MAY9ZsGTpqr0Po61SN5p3IzmPz3" }} >
 
-            <NavigationBar
-                handleShowModal={handleShowModal}
-                handleShowOffCanvas={handleShowOffCanvas}
-                handleChangeModalContent={handleChangeModalContent}
-                handleLogOut={handleLogout}
-                numProductsInCart={shoppingCartItems}
-                loggedIn={loggedIn}
-            />
+                {/* MODAL */}
+                <Modal show={showModal} title={modalTitle} handleCloseModal={handleCloseModal} >
+                    {modalContent}
+                </Modal>
+                {/* NAV BAR */}
 
-            {/* VIEWS */}
-            <Catalog products={products} handleAddProductToCart={handleAddProductToCart} />
-            <NMOffCanvas
-                showOffCanvas={showOffCanvas}
-                handleCloseOffCanvas={handleCloseOffCanvas}
-                products={products}
-                shoppingCartItems={shoppingCartItems}
-                handleRemoveItemFromCart={handleRemoveItemFromCart}
-                handleChangeModalContent={handleChangeModalContent}
-            />
+                <NavigationBar
+                    handleShowModal={handleShowModal}
+                    handleShowOffCanvas={handleShowOffCanvas}
+                    handleChangeModalContent={handleChangeModalContent}
+                    handleLogOut={handleLogout}
+                    numProductsInCart={shoppingCartItems}
+                    loggedIn={loggedIn}
+                />
+
+                {/* VIEWS */}
+                <Catalog products={products} handleAddProductToCart={handleAddProductToCart} />
+                <NMOffCanvas
+                    showOffCanvas={showOffCanvas}
+                    handleCloseOffCanvas={handleCloseOffCanvas}
+                    products={products}
+                    shoppingCartItems={shoppingCartItems}
+                    handleRemoveItemFromCart={handleRemoveItemFromCart}
+                    handleChangeModalContent={handleChangeModalContent}
+                />
             </PayPalScriptProvider>
         </>
     )
