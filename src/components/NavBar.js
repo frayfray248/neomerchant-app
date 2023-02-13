@@ -1,22 +1,15 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown'
 import Link from 'next/link'
 import styled from 'styled-components';
-import NMButton from './NMButton';
 import React from 'react';
 import { Cart3 } from 'react-bootstrap-icons'
+import { Person } from 'react-bootstrap-icons'
 
 const StyledNavBar = styled(Navbar)`
     box-shadow: 10px 10px 10px;
-`
-
-const StyledButton = styled.button`
-    border-radius: 15px;
-    transition: background-color 0.2s ease-in-out;
-    &:hover {
-        background-color: lightgray;
-    }
 `
 
 
@@ -45,31 +38,29 @@ const NavigationBar = ({ handleShowModal, handleChangeModalContent, handleShowOf
                     <Nav className="me-auto">
                         <Link href="/#catalog" passHref legacyBehavior><Nav.Link>Catalog</Nav.Link></Link>
                     </Nav>
-
                     {
-                        loggedIn
-                            ?
-                            <>
-                                <StyledButton
-                                    className="me-2"
-                                    onClick={handleShoppingCartPressed}
-                                >
-                                    <Cart3
-                                        className="m-2"
-                                        size="2em"
-                                    />
-                                    {
-                                        shoppingCartItems.length > 0 ? <span className="me-2"><b>({shoppingCartItems.length})</b></span> : ""
-                                    }
-                                </StyledButton>
-                            </>
+                        loggedIn ?
+                            <Nav.Link className="m-2" onClick={handleShoppingCartPressed}>
+                                <Cart3 className="me-2" size="2em" />
+                                {
+                                    shoppingCartItems.length > 0 ? <span className="me-2"><b>({shoppingCartItems.length})</b></span> 
+                                    : 
+                                    <span className="me-2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                }
+                            </Nav.Link>
                             : ""
                     }
 
+                    <NavDropdown className="m-2" title={<Person size="2.0em" />} id="basic-nav-dropdown">
 
-                    <NMButton onClick={
-                        loggedIn ? handleLogoutPressed : handleLoginPressed
-                    }>{loggedIn ? "Log out" : "Login"}</NMButton>
+                        {
+                            loggedIn ?
+                                <NavDropdown.Item href="#action/3.1" onClick={handleLogoutPressed}>Logout</NavDropdown.Item>
+                                :
+                                <NavDropdown.Item href="#action/3.2" onClick={handleLoginPressed}>Login</NavDropdown.Item>
+
+                        }
+                    </NavDropdown>
                 </Navbar.Collapse>
             </Container>
         </StyledNavBar>

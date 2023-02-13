@@ -1,4 +1,5 @@
-import Button from 'react-bootstrap/Button'
+import Button from './Button'
+import { CartX } from 'react-bootstrap-icons'
 
 const ShoppingCartItemRow = ({ itemIndex, item, cartRowItem, handleRemoveItemFromCart }) => {
 
@@ -11,7 +12,7 @@ const ShoppingCartItemRow = ({ itemIndex, item, cartRowItem, handleRemoveItemFro
             <td>{cartRowItem.title}</td>
             <td>{cartRowItem.quantity}</td>
             <td>${cartRowItem.price * cartRowItem.quantity}</td>
-            <td><Button variant="danger" onClick={removeItemOnClick}>X</Button></td>
+            <td><Button variant="danger" onClick={removeItemOnClick} color="red"><CartX size="2em"/></Button></td>
         </tr>
     )
 }
