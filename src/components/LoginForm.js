@@ -19,6 +19,7 @@ function LoginForm({ handleLogin }) {
             // error
             .catch(message => {
                 setErrorMessage(message)
+                setSubmitting(false)
             })
     }
 
